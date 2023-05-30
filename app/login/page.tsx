@@ -1,5 +1,5 @@
 "use client";
-import Input from "@/components/Input/Input";
+import Input from "@/components/input/Input";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -26,21 +26,24 @@ const Login = (props: Props) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      signIn("credentials", {
-        ...state,
-        redirect: false,
-      }).then((callback) => {
+
+    signIn("credentials", {
+      ...state,
+      redirect: false,
+    }).then((callback) => {
+      try {
+        if (callback?.error) {
+          throw Error("Wrong Credentials!");
+        }
+
         if (callback?.ok) {
           router.refresh();
+          router.push("/");
         }
-        if (callback?.error) {
-          throw new Error("Wrong Credentials");
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+      } catch (error) {
+        console.log("errrrrrr", error);
+      }
+    });
   };
   return (
     <form className='text-center' onSubmit={handleSubmit}>
